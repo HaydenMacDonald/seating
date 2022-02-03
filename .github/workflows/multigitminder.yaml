@@ -1,0 +1,30 @@
+name: multigitminder-linguist
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  multigitminder:
+    runs-on: ubuntu-latest
+    name: multigitminder
+    steps:
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+      # linguist
+      - name: Linguist Action
+        uses: fabasoad/linguist-action@v1.0.2
+        id: linguist
+        with:
+          path: './'
+          percentage: true
+      # multigitminder
+      - name: multigitminder
+        uses: HaydenMacDonald/multigitminder@v1.0.0
+        id: multigitminder
+        with:
+          USERNAME: ${{ secrets.BEEMINDER_USERNAME }}
+          AUTH_TOKEN: ${{ secrets.BEEMINDER_AUTH_TOKEN }}
+          GOAL: python
+          TARGET_LANGS: Python
+          REPO_LANGS: ${{ steps.linguist.outputs.data }}
