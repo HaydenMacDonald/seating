@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Config files
+*.cfg
+
+# GCP Project credentials file
+seating-340219-e34d940a0875.json
