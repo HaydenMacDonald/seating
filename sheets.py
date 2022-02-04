@@ -34,12 +34,9 @@ def main():
                 print('No data found.')
                 return
 
-            cell_count = 0
             for i in wks:
-                print(len(i))
-                cell_count += len(i)
-            
-            print(cell_count)
+                print(i)
+    
     except HttpError as err:
         print(err)
 
