@@ -1,60 +1,45 @@
 from __future__ import print_function
-
+import json
 import os.path
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from google.oauth2.service_account import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1yL7FYxyUF4K1YpE5BYfLM0D3v8XdaRTDMkvy9XgKar8'
-SAMPLE_RANGE_NAME = 'Class Data!A1:CS97'
-
+SAMPLE_RANGE_NAME = 'A1:CS97'
 
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+    creds = ServiceAccountCredentials.from_json_keyfile_name('seating-340219-e34d940a0875.json', SCOPES)
+    gc = gspread.authorize(creds)
+        
     try:
-        service = build('sheets', 'v4', credentials=creds)
+        with open('seating-340219-e34d940a0875.json') as json_file:
+            cred_file = json.load(json_file)
+            # Open a sheet from a spreadsheet in one go
+            wks = gc.open_by_url(cred_file.get("edit_link")).sheet1.get_values()
 
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                    range=SAMPLE_RANGE_NAME).execute()
-        values = result.get('values', [])
+            if not wks:
+                print('No data found.')
+                return
 
-        if not values:
-            print('No data found.')
-            return
-
-        print('Name, Major:')
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            print('%s, %s' % (row[0], row[4]))
+            cell_count = 0
+            for i in wks:
+                print(len(i))
+                cell_count += len(i)
+            
+            print(cell_count)
     except HttpError as err:
         print(err)
 
