@@ -58,7 +58,7 @@ def clean_distance_matrix(matrix):
 
     # Use same logic as above to remove name indices from lists
     distances = [ [j for j in i if j != "" and j != None and j != 'NA'][1:] for i in rows]
-    distances = [[float(j) for j in i] for i in distances]
+    distances = [[int(float(j)*10) for j in i] for i in distances]
 
     # Check that the number of attendees squared equals the number of relationship scores, else return
     sum = 0
