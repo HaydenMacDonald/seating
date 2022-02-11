@@ -1,7 +1,7 @@
 name: multigitminder-linguist
 on:
   push:
-    branches: [ main ]
+    branches: [ main, vrp ]
 
 jobs:
   multigitminder:

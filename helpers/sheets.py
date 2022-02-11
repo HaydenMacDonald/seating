@@ -17,7 +17,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 SAMPLE_SPREADSHEET_ID = "1yL7FYxyUF4K1YpE5BYfLM0D3v8XdaRTDMkvy9XgKar8"
 SAMPLE_RANGE_NAME = "A1:CS97"
 
-def sheets():
+def import_sheets():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
     """
@@ -37,6 +37,30 @@ def sheets():
             data = clean_distance_matrix(wks)
 
             return data
+    
+    except HttpError as err:
+        print(err)
+
+
+def export_sheets(data):
+    """Shows basic usage of the Sheets API.
+    Prints values from a sample spreadsheet.
+    """
+    creds = ServiceAccountCredentials.from_json_keyfile_name("seating-340219-e34d940a0875.json", SCOPES)
+    gc = gspread.authorize(creds)
+        
+    try:
+        with open("seating-340219-e34d940a0875.json") as json_file:
+            cred_file = json.load(json_file)
+            # Open a sheet from a spreadsheet in one go
+            wks = gc.open_by_url(cred_file.get("results_link")).sheet1
+
+            if not wks:
+                print("Could not open spreadsheet.")
+                return
+
+            wks.clear()
+            wks.update('A1:Z100', data)
     
     except HttpError as err:
         print(err)
@@ -75,8 +99,10 @@ def clean_distance_matrix(matrix):
     result["distance_matrix"] = distances
 
     # Assign meta variables, the following are defaults for TSP problem
-    result['num_vehicles'] = 1
+    result['num_vehicles'] = 12
     result['depot'] = 0
+    result['demands'] = [1] * len(indices)
+    result['vehicle_capacities'] = [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10]
     result['pickups_deliveries'] = [
         [6, 5], # Andrew to Susan
         [5, 29], # Susan to Teresa
@@ -92,4 +118,4 @@ def clean_distance_matrix(matrix):
 
     
 if __name__ == "__main__":
-    sheets()
+    import_sheets()
