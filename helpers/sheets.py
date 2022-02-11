@@ -78,9 +78,9 @@ def clean_distance_matrix(matrix):
     result['num_vehicles'] = 1
     result['depot'] = 0
     result['pickups_deliveries'] = [
-        [29, 0], # Teresa to Beth
-        [5, 29], # Susan to Teresa
         [6, 5], # Andrew to Susan
+        [5, 29], # Susan to Teresa
+        [29, 0], # Teresa to Beth
         [0, 1], # Beth to Hayden
         [1, 4], # Hayden to Jansen
         [4, 2], # Jansen to Mom

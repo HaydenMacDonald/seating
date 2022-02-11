@@ -125,7 +125,7 @@ def print_solution(manager, routing, solution, indices_labels):
     route_distance = 0
     print_counter = 0
     while not routing.IsEnd(index):
-        if print_counter == 7:
+        if print_counter == 7 or manager.IndexToNode(index) == 3 or manager.IndexToNode(index) == 23:
             plan_output += ' {}({})\n'.format(indices_labels[manager.IndexToNode(index)], manager.IndexToNode(index))
             print_counter = 0
         else:
@@ -139,6 +139,10 @@ def print_solution(manager, routing, solution, indices_labels):
     print(plan_output)
     plan_output += 'Route distance: {} miles\n'.format(route_distance)
 
+def save_solution(manager, routing, solution, indices_labels):
+    index = routing.Start(0)
+    print_counter = 0
+    result = []
 
 def tsp():
     """Entry point of the program."""
@@ -167,6 +171,7 @@ def tsp():
 
     # Setting first solution heuristic.
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters.time_limit.seconds = 30
     search_parameters.first_solution_strategy = (
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
 
@@ -176,6 +181,7 @@ def tsp():
     # Print solution on console.
     if solution:
         print_solution(manager, routing, solution, data["indices"])
+        save_solution(manager, routing, solution, data["indices"])
     else:
         print("No Solution Found!")
 
