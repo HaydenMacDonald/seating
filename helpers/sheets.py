@@ -102,7 +102,7 @@ def clean_distance_matrix(matrix):
     result['num_vehicles'] = 12
     result['depot'] = 0
     result['demands'] = [1] * len(indices)
-    result['vehicle_capacities'] = [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10]
+    result['vehicle_capacities'] = [9, 8, 9, 9, 10, 10, 9, 9, 9, 9, 9, 10]
     result['pickups_deliveries'] = [
         [6, 5], # Andrew to Susan
         [5, 29], # Susan to Teresa
